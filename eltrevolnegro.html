@@ -1,0 +1,83 @@
+<!--
+// section = es una etiqueta de html que sirve para dividir las 
+secciones de nuestra pagina, las oraciones dentro tienen que estar separadas por un "-"
+
+//id = identificador 
+// span = sirve para que con .js podamos cambiar el valor "dinamico"
+// input = sirve para introducir informacion 
+// type = para escorger de entre los direntes tipos de inputs
+// type/number = para numeros /time = para la hora /date = para fechas /checkbox = caja de seleccion 
+// type/radio-name-id = unica seleccion / name = grupo al que pertenece / id = identificador del radio 
+// label-for = esta etiqueta sirve para dar un indicador de lo se esta seleccionando / for = este
+atributo sirve para vincular un label con un input 
+ 
+//
+
+asta -> nomagia
+juno -> mana 
+lucifero -> diavlo 
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>EL TREVOL NEGRO! </title>
+        <link rel="stylesheet" href="./diseñodeltrevol.css">
+        
+    </head>
+
+    <body>
+
+        <section id="seleccionar-personaje">
+
+            <h1 class="titulo">El Trevol Negro 🪁 ☘ 👿</h1>
+           
+            <h2 class="subtitulo">selecciona a tu personaje</h2>
+            
+            <div id="contenedorTarjetas" class="tarjetas">
+
+            </div>
+    
+            <button id="boton-seleccionar-personaje">seleccionar</button>  
+        </section>
+ 
+
+        <section id="seleccionar-ataque">
+            
+            <h2>selecciona tu ataque</h2>
+            
+            <div id="contenedorAtaques" class="tarjetas-ataques"> 
+               
+            </div>
+
+            <div>
+                <section id="mensaje">
+                    <p id="resultado">Mucha Suerte</p>
+                </section>
+                
+            </div>
+             
+            <div class="vida-ataque">
+                <div class="a">
+                    <p id="vida-personaje">3</p>
+                    <p id="nombre-personaje">?</p>
+                    <div id="ataque-jugador"></div>
+                </div>
+                <div class="b">
+                    <p id="vida-enemigo">3</p>
+                    <p id="nombre-enemigo">?</p>
+                    <div id="ataque-enemigo"></div>
+                </div>
+            </div>
+             
+        </section>
+
+        <section id="reiniciar">
+            <button id="boton-reiniciar">reiniciar</button>
+        </section>
+
+        <script src="./js/eltrevolnegro.js"></script>
+    </body>
+
+</html>
