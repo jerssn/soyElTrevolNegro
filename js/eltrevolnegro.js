@@ -1,4 +1,4 @@
-const araew = 2 
+const araew = 22
 // document = representa a nuestro documento HTML 
 // window = representa la ventana que contiene un documento DOM cargado en esa ventana
 // El árbol DOM incluye elementos como <body> y <table> 
