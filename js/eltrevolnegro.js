@@ -1,4 +1,4 @@
-const araew = 21
+
 // document = representa a nuestro documento HTML 
 // window = representa la ventana que contiene un documento DOM cargado en esa ventana
 // El árbol DOM incluye elementos como <body> y <table> 
@@ -49,6 +49,8 @@ let botonNoMagia
 let botonDiavlo 
 let botonMana
 let botones = []
+let indexAtaqueJugador
+let indexAtaqueEnemigo
 let ataqueJugador = []
 let vidaJugador = 3
 let vidaEnemigo = 3
@@ -217,17 +219,31 @@ function ataqueAleatorioEnemigo() {
     iniciarPelea ()
 }
 
+
 function iniciarPelea(){
     if(ataqueJugador.length == 5 ){
         combate()
     }
 }
 
+
 function aleatorio( min , max ) {
     return Math.floor( Math.random() * ( max - min + 1 ) + min );
 }
 
+function indexAmbosOponentes(jugador, enemigo) {
+  indexAtaqueJugador = ataqueEnemigo[jugador]
+  indexAtaqueEnemigo = ataqueEnemigo[enemigo]
+}
+
 function combate() {
+
+  for (let index = 0; index < ataqueJugador.length; index++) {
+    if (ataqueJugador[index] === ataqueEnemigo[index]) {
+      crearMensaje("Empate")
+    }
+    
+  }
 
     if ( ataqueJugador == ataqueEnemigo ) {
         crearMensaje( "¡EMPATE! 🤼" )
@@ -271,8 +287,9 @@ function crearMensaje(resultado) {
     let nAtaqueEnemigo = document.createElement('p')
 
     seccionMensaje.innerHTML = resultado  
-    nAtaqueJugador.innerHTML = ataqueJugador
-    nAtaqueEnemigo.innerHTML = ataqueEnemigo
+    nAtaqueJugador.innerHTML = indexAtaqueJugador
+    nAtaqueEnemigo.innerHTML = indexAtaqueEnemigo
+    
     ataqueDelJugador.appendChild(nAtaqueJugador)
     ataqueDelEnemigo.appendChild(nAtaqueEnemigo)
 }
