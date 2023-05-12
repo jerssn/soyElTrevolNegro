@@ -41,7 +41,12 @@ lucifero -> diavlo
     
             <button id="boton-seleccionar-personaje">seleccionar</button>  
         </section>
- 
+        
+        <section id="ver-mapa">
+          <h2 class="titulo">Recorre el mapa con tu personaje</h2>
+          <canvas id="mapa"></canvas>
+          <button onclick="moverAsta">Mover</button>
+        </section>
 
         <section id="seleccionar-ataque">
             
@@ -60,12 +65,12 @@ lucifero -> diavlo
              
             <div class="vida-ataque">
                 <div class="a">
-                    <p id="vida-personaje">3</p>
+                    <p id="vida-personaje">0</p>
                     <p id="nombre-personaje">?</p>
                     <div id="ataque-jugador"></div>
                 </div>
                 <div class="b">
-                    <p id="vida-enemigo">3</p>
+                    <p id="vida-enemigo">0</p>
                     <p id="nombre-enemigo">?</p>
                     <div id="ataque-enemigo"></div>
                 </div>

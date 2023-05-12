@@ -35,6 +35,8 @@ const ataqueDelJugador = document.getElementById('ataque-jugador')
 const ataqueDelEnemigo = document.getElementById('ataque-enemigo')
 const contenedorTarjetas = document.getElementById('contenedorTarjetas')
 const contenedorAtaques = document.getElementById('contenedorAtaques')
+const sectionVerMapa = document.getElementById("ver-mapa")
+const mapa = document.getElementById("mapa")
 
 let personajes = []
 let opcionDePersonajes
@@ -52,8 +54,11 @@ let botones = []
 let indexAtaqueJugador
 let indexAtaqueEnemigo
 let ataqueJugador = []
+let victoriasJugador = 0
+let victoriasEnemigo = 0
 let vidaJugador = 3
 let vidaEnemigo = 3
+let lienzo = mapa.getContext("2d")
 
 sectionReiniciar.style.display = 'none'
 
@@ -63,6 +68,13 @@ class personaje {
         this.foto = foto 
         this.vida = vida 
         this.ataques = []
+        this.x = 20
+        this.y = 30
+        this.ancho = 40
+        this.alto = 40
+        this.mapaFoto = new Image()
+        this.mapaFoto.src = foto 
+        
     }
 }
 
@@ -99,6 +111,7 @@ personajes.push(asta,juno,lucifero)
 function iniciarJuego() { 
     
     sectionSeleccionarAtaque.style.display = 'none'
+    sectionVerMapa.style.display = "none"
 
     personajes.forEach((personaje) => {
         opcionDePersonajes = `
@@ -141,7 +154,9 @@ function seleccionarPersonajeJugador() {
     }
     else { alert('SELECCIONA UNA MASCOTA')
     }
-        sectionSeleccionarAtaque.style.display = 'flex'
+        //sectionSeleccionarAtaque.style.display = 'flex'
+        sectionVerMapa.style.display = "flex"
+        
         extraerAtaques(guardarNombrePersonaje)
         seleccionarPersonjeEnemigo()
         
@@ -179,16 +194,19 @@ function secuenciaAtaque () {                              // clase 56
                 ataqueJugador.push('No Magia')
                 console.log(ataqueJugador)
                 boton.style.background = '#112f58'
+                boton.disabled = true
             }
             else if (e.target.textContent === 'mana🎆'){
                 ataqueJugador.push('Mana')
                 console.log(ataqueJugador)
                 boton.style.background = '#112f58'
+                botones.disabled = true
             }
             else {             
                 ataqueJugador.push('Diavlo')
                 console.log(ataqueJugador)
                 boton.style.background = '#112f58'
+                boton.disabled = true
             }        
             ataqueAleatorioEnemigo()
         })        
@@ -232,7 +250,7 @@ function aleatorio( min , max ) {
 }
 
 function indexAmbosOponentes(jugador, enemigo) {
-  indexAtaqueJugador = ataqueEnemigo[jugador]
+  indexAtaqueJugador = ataqueJugador[jugador]
   indexAtaqueEnemigo = ataqueEnemigo[enemigo]
 }
 
@@ -240,43 +258,46 @@ function combate() {
 
   for (let index = 0; index < ataqueJugador.length; index++) {
     if (ataqueJugador[index] === ataqueEnemigo[index]) {
-      crearMensaje("Empate")
+      indexAmbosOponentes(index, index)
+      crearMensaje(" ¡EMPATE! 🤼")
     }
-    
-  }
-
-    if ( ataqueJugador == ataqueEnemigo ) {
-        crearMensaje( "¡EMPATE! 🤼" )
-    } 
-    else if ( ataqueJugador == 'Mana' && ataqueEnemigo == 'Diavlo' ) {
+    else if ( ataqueJugador[index] === 'Mana' && ataqueEnemigo[index] === 'Diavlo' ) {
+      indexAmbosOponentes(index, index)
         crearMensaje( "¡GANASTE! 🥳" )
-        vidaEnemigo-- 
-        spanVidaEnemigo.innerHTML = vidaEnemigo
+        victoriasJugador++
+        spanVidaJugador.innerHTML = victoriasJugador
     } 
-    else if ( ataqueJugador == 'No Magia' && ataqueEnemigo == 'Mana' ) {
+    else if ( ataqueJugador[index] === 'No Magia' && ataqueEnemigo[index] === 'Mana' ) {
+      indexAmbosOponentes(index, index)
         crearMensaje( "¡GANASTE! 🥳" )
-        vidaEnemigo-- 
-        spanVidaEnemigo.innerHTML = vidaEnemigo
+        victoriasJugador++
+        spanVidaJugador.innerHTML = victoriasJugador
     } 
-    else if ( ataqueJugador == 'Diavlo' && ataqueEnemigo == 'No Magia' ) {
+    else if ( ataqueJugador[index] === 'Diavlo' && ataqueEnemigo[index] === 'No Magia' ) {
+      indexAmbosOponentes(index, index)
         crearMensaje( "¡GANASTE! 🥳" )
-        vidaEnemigo-- 
-        spanVidaEnemigo.innerHTML = vidaEnemigo
+        victoriasJugador++
+        spanVidaJugador.innerHTML = victoriasJugador
     } 
     else {
+      indexAmbosOponentes(index, index)
         crearMensaje( "PERDISTE... 😢" )
-        vidaJugador-- 
-        spanVidaJugador.innerHTML = vidaJugador
+        victoriasEnemigo++
+        spanVidaEnemigo.innerHTML = victoriasEnemigo
     }
+  }
         revisarVidas()
 }
 
 function revisarVidas() {
    
-    if(vidaEnemigo == 0){
+   if (victoriasJugador === victoriasEnemigo){
+     crearMensajeFinal(`WAT?? COMO VRGAS EMPATARON?`)
+   }
+    else if(vidaEnemigo > victoriasEnemigo){
         crearMensajeFinal("FELICIDADES PNCHE OTAKU . GANASTE")
     }
-    else if(vidaJugador == 0) {
+    else {
         crearMensajeFinal("BUA.. ALTO PERDEDOR")
     }
 }
@@ -298,15 +319,27 @@ function crearMensajeFinal(resultadoFinal) {
 
     seccionMensaje.innerHTML = resultadoFinal
 
-    botonMana.disabled = true 
-    botonNoMagia.disabled = true 
-    botonDiavlo.disabled = true 
-
     sectionReiniciar.style.display = 'block'
 }
 
 function reiniciarJuego(){
     location.reload()
+}
+
+function pintarPersonaje() {
+  lienzo.clearRect(0, 0, mapa.width, mapa.height)
+  lienzo.drawImage(
+    asta.mapaFoto,
+    asta.x,
+    asta.y,
+    asta.ancho,
+    asta.alto
+    )
+}
+
+function moverAsta(){
+  asta.x = asta.x + 5
+  pintarPersonaje() 
 }
 
 window.addEventListener('load', iniciarJuego)
