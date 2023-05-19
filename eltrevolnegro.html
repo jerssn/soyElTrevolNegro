@@ -43,9 +43,13 @@ lucifero -> diavlo
         </section>
         
         <section id="ver-mapa">
-          <h2 class="titulo">Recorre el mapa con tu personaje</h2>
+          <h1 class="titulo">Recorre el mapa con tu personaje</h1>
           <canvas id="mapa"></canvas>
-          <button onclick="moverAsta">Mover</button>
+          <button onmouseup = "detenerMovimiento()" onmousedown="moverArriba()">Arriba</button>
+          <button onmouseup = "detenerMovimiento()" onmousedown="moverIzquierda()">Izquierda</button>
+          <button onmouseup = "detenerMovimiento()" onmousedown="moverAbajo()">Abajo</button>
+          <button onmouseup = "detenerMovimiento()" onmousedown="moverDerecha()">Derecha</button>
+
         </section>
 
         <section id="seleccionar-ataque">

@@ -59,6 +59,7 @@ let victoriasEnemigo = 0
 let vidaJugador = 3
 let vidaEnemigo = 3
 let lienzo = mapa.getContext("2d")
+let intervalo 
 
 sectionReiniciar.style.display = 'none'
 
@@ -70,10 +71,12 @@ class personaje {
         this.ataques = []
         this.x = 20
         this.y = 30
-        this.ancho = 40
-        this.alto = 40
+        this.ancho = 80
+        this.alto = 80
         this.mapaFoto = new Image()
         this.mapaFoto.src = foto 
+        this.velocidadX = 0
+        this.velocidadY = 0
         
     }
 }
@@ -157,6 +160,7 @@ function seleccionarPersonajeJugador() {
         //sectionSeleccionarAtaque.style.display = 'flex'
         sectionVerMapa.style.display = "flex"
         
+        iniciarMapa()
         extraerAtaques(guardarNombrePersonaje)
         seleccionarPersonjeEnemigo()
         
@@ -327,6 +331,8 @@ function reiniciarJuego(){
 }
 
 function pintarPersonaje() {
+  asta.x = asta.x + asta.velocidadX
+  asta.y = asta.y + asta.velocidadY
   lienzo.clearRect(0, 0, mapa.width, mapa.height)
   lienzo.drawImage(
     asta.mapaFoto,
@@ -337,9 +343,54 @@ function pintarPersonaje() {
     )
 }
 
-function moverAsta(){
-  asta.x = asta.x + 5
-  pintarPersonaje() 
+function moverDerecha() {
+  asta.velocidadX = 5
+}
+
+function moverIzquierda() {
+  asta.velocidadX = -5
+}
+
+function moverAbajo() {
+  asta.velocidadY = 5
+}
+
+function moverArriba() {
+  asta.velocidadY = - 5
+}
+
+function detenerMovimiento() {
+  asta.velocidadX = 0
+  asta.velocidadY = 0
+}
+
+function sePresionoUnaTecla(event) {
+   switch (event.key) {
+     
+     case 'ArrowUp':
+       moverArriba()
+       break
+     case 'ArrowDown':
+       moverAbajo()
+       break
+     case 'ArrowLeft':
+       moverIzquierda()
+       break
+     case 'ArrowRight':
+       moverDerecha()
+       break
+     default:
+       break
+         
+   }
+}
+
+function iniciarMapa() {
+  
+  intervalo = setInterval(pintarPersonaje, 50)
+  window.addEventListener("keydown", sePresionoUnaTecla)
+  window.addEventListener("keyup", detenerMovimiento)
+  
 }
 
 window.addEventListener('load', iniciarJuego)
