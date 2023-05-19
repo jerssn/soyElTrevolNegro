@@ -59,7 +59,10 @@ let victoriasEnemigo = 0
 let vidaJugador = 3
 let vidaEnemigo = 3
 let lienzo = mapa.getContext("2d")
-let intervalo 
+let intervalo
+let jugadorObjeto  
+let mapaBackground = new Image()
+mapaBackground.src = "./assets/mapa.png"
 
 sectionReiniciar.style.display = 'none'
 
@@ -157,11 +160,12 @@ function seleccionarPersonajeJugador() {
     }
     else { alert('SELECCIONA UNA MASCOTA')
     }
+    
         //sectionSeleccionarAtaque.style.display = 'flex'
         sectionVerMapa.style.display = "flex"
         
         iniciarMapa()
-        extraerAtaques(guardarNombrePersonaje)
+        extraerAtaques(guardarNombrePersonaje) //class66 mascotaJugador=guardarNombrePersonaje
         seleccionarPersonjeEnemigo()
         
 }
@@ -330,38 +334,45 @@ function reiniciarJuego(){
     location.reload()
 }
 
-function pintarPersonaje() {
-  asta.x = asta.x + asta.velocidadX
-  asta.y = asta.y + asta.velocidadY
+function pintarCanvas() {
+  jugadorObjeto.x = jugadorObjeto.x + jugadorObjeto.velocidadX
+  jugadorObjeto.y = jugadorObjeto.y + jugadorObjeto.velocidadY
   lienzo.clearRect(0, 0, mapa.width, mapa.height)
   lienzo.drawImage(
-    asta.mapaFoto,
-    asta.x,
-    asta.y,
-    asta.ancho,
-    asta.alto
+    mapaBackground,
+    0,
+    0,
+    mapa.width,
+    mapa.height
+  )
+  lienzo.drawImage(
+    jugadorObjeto.mapaFoto,
+    jugadorObjeto.x,
+    jugadorObjeto.y,
+    jugadorObjeto.ancho,
+    jugadorObjeto.alto
     )
 }
 
 function moverDerecha() {
-  asta.velocidadX = 5
+  jugadorObjeto.velocidadX = 5
 }
 
 function moverIzquierda() {
-  asta.velocidadX = -5
+  jugadorObjeto.velocidadX = -5
 }
 
 function moverAbajo() {
-  asta.velocidadY = 5
+  jugadorObjeto.velocidadY = 5
 }
 
 function moverArriba() {
-  asta.velocidadY = - 5
+  jugadorObjeto.velocidadY = - 5
 }
 
 function detenerMovimiento() {
-  asta.velocidadX = 0
-  asta.velocidadY = 0
+  jugadorObjeto.velocidadX = 0
+  jugadorObjeto.velocidadY = 0
 }
 
 function sePresionoUnaTecla(event) {
@@ -386,11 +397,22 @@ function sePresionoUnaTecla(event) {
 }
 
 function iniciarMapa() {
-  
-  intervalo = setInterval(pintarPersonaje, 50)
+
+  mapa.width = 700
+  mapa.height = 500
+  jugadorObjeto = obtenerObjetoPersonaje(guardarNombrePersonaje) 
+  intervalo = setInterval(pintarCanvas, 50)
   window.addEventListener("keydown", sePresionoUnaTecla)
   window.addEventListener("keyup", detenerMovimiento)
   
+}
+
+function obtenerObjetoPersonaje() {
+  for (let i = 0; i < personajes.length; i++) {                    //clase 54-55
+    if (guardarNombrePersonaje === personajes[i].nombre) {
+        return personajes[i]
+    }
+}
 }
 
 window.addEventListener('load', iniciarJuego)
