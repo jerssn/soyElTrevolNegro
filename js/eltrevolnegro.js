@@ -221,7 +221,7 @@ function extraerAtaques (guardarNombrePersonaje) {
 function mostrarAtaques(ataques) {
     ataques.forEach((ataque) => {
         ataquesPersonaje = `
-        <button id=${ataque.id} class="boton-de-ataque BtnAtaque">${ataque.nombre} </button>
+        <button id=${ataque.id} class="boton-de-ataque BtnAtaque">${ataque.nombre}</button>
         `
         contenedorAtaques.innerHTML += ataquesPersonaje
     })
