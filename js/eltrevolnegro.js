@@ -67,13 +67,13 @@ mapaBackground.src = "./assets/mapa.png"
 sectionReiniciar.style.display = 'none'
 
 class personaje {
-    constructor(nombre, foto, vida) {
+    constructor(nombre, foto, vida, x=10, y=10) {
         this.nombre = nombre
         this.foto = foto 
         this.vida = vida 
         this.ataques = []
-        this.x = 20
-        this.y = 30
+        this.x = x
+        this.y = y
         this.ancho = 80
         this.alto = 80
         this.mapaFoto = new Image()
@@ -82,19 +82,40 @@ class personaje {
         this.velocidadY = 0
         
     }
+    
+    pintarPersonaje() {
+    lienzo.drawImage(
+      this.mapaFoto,
+      this.x, 
+      this.y,
+      this.ancho,
+      this.alto
+    )
+    }
 }
 
-let asta = new personaje('Asta', './assets/Asta.png', 2)
-let juno = new personaje('Juno', './assets/Juno.png', 2)
-let lucifero = new personaje('Lucifero', './assets/Lucifero.png', 2)
+let asta = new personaje('Asta', './assets/Asta.png', 5)
+let juno = new personaje('Juno', './assets/Juno.png', 5)
+let lucifero = new personaje('Lucifero', './assets/Lucifero.png', 5)
+let astaEnemigo = new personaje('Asta', './assets/Asta.png', 5, 80, 120)
+let junoEnemigo = new personaje('Juno', './assets/Juno.png', 5, 150, 95)
+let luciferoEnemigo = new personaje('Lucifero', './assets/Lucifero.png', 5, 200, 190)
 
 asta.ataques.push(
     {nombre: 'nomagia☘', id:'boton-nomagia'},
     {nombre: 'nomagia☘', id:'boton-nomagia'},
     {nombre: 'nomagia☘', id:'boton-nomagia'},
-    {nombre: 'diavlo👿', id:'boton-diavlo'},
     {nombre: 'mana🎆', id:'boton-mana'},
+    {nombre: 'diavlo👿', id:'boton-diavlo'},
     )
+    
+astaEnemigo.ataques.push(
+    {nombre: 'nomagia☘', id:'boton-nomagia'},
+    {nombre: 'nomagia☘', id:'boton-nomagia'},
+    {nombre: 'nomagia☘', id:'boton-nomagia'},
+    {nombre: 'mana🎆', id:'boton-mana'},
+    {nombre: 'diavlo👿', id:'boton-diavlo'},
+    )    
     
 juno.ataques.push(
     {nombre: 'mana🎆', id:'boton-mana'},
@@ -104,7 +125,23 @@ juno.ataques.push(
     {nombre: 'diavlo👿', id:'boton-diavlo'},
     )
 
+junoEnemigo.ataques.push(
+    {nombre: 'mana🎆', id:'boton-mana'},
+    {nombre: 'mana🎆', id:'boton-mana'},
+    {nombre: 'mana🎆', id:'boton-mana'},
+    {nombre: 'nomagia☘', id:'boton-nomagia'},
+    {nombre: 'diavlo👿', id:'boton-diavlo'},
+    )
+
 lucifero.ataques.push(
+    {nombre: 'diavlo👿', id:'boton-diavlo'},
+    {nombre: 'diavlo👿', id:'boton-diavlo'},
+    {nombre: 'diavlo👿', id:'boton-diavlo'},
+    {nombre: 'mana🎆', id:'boton-mana'},
+    {nombre: 'nomagia☘', id:'boton-nomagia'},
+    )
+
+luciferoEnemigo.ataques.push(
     {nombre: 'diavlo👿', id:'boton-diavlo'},
     {nombre: 'diavlo👿', id:'boton-diavlo'},
     {nombre: 'diavlo👿', id:'boton-diavlo'},
@@ -166,7 +203,7 @@ function seleccionarPersonajeJugador() {
         
         iniciarMapa()
         extraerAtaques(guardarNombrePersonaje) //class66 mascotaJugador=guardarNombrePersonaje
-        seleccionarPersonjeEnemigo()
+        
         
 }
 
@@ -345,13 +382,15 @@ function pintarCanvas() {
     mapa.width,
     mapa.height
   )
-  lienzo.drawImage(
-    jugadorObjeto.mapaFoto,
-    jugadorObjeto.x,
-    jugadorObjeto.y,
-    jugadorObjeto.ancho,
-    jugadorObjeto.alto
-    )
+  jugadorObjeto.pintarPersonaje()
+  astaEnemigo.pintarPersonaje()
+  junoEnemigo.pintarPersonaje()
+  luciferoEnemigo.pintarPersonaje()
+  
+  if (jugadorObjeto.velocidadX !== 0 || jugadorObjeto.velocidadY !== 0){
+    revisarColision(astaEnemigo)
+    revisarColision(junoEnemigo)
+    revisarColision(luciferoEnemigo)  }
 }
 
 function moverDerecha() {
@@ -412,7 +451,34 @@ function obtenerObjetoPersonaje() {
     if (guardarNombrePersonaje === personajes[i].nombre) {
         return personajes[i]
     }
+  }
 }
+
+function revisarColision(enemigo) {
+  const arribaEnemigo = enemigo.y
+  const abajoEnemigo = enemigo.y + enemigo.alto
+  const derechaEnemigo = enemigo.x + enemigo.ancho
+  const izquierdaEnemigo = enemigo.x
+  
+  const arribaPersonaje = jugadorObjeto.y
+  const abajoPersonaje = jugadorObjeto.y + jugadorObjeto.alto
+  const derechaPersonaje = jugadorObjeto.x + jugadorObjeto.ancho
+  const izquierdaPersonaje = jugadorObjeto.x
+  
+  if(
+    abajoPersonaje < arribaEnemigo ||
+    arribaPersonaje > abajoEnemigo ||
+    derechaPersonaje < izquierdaEnemigo ||
+    izquierdaPersonaje > derechaEnemigo
+    ){
+      return
+    }
+    detenerMovimiento()
+    clearInterval(intervalo)
+    sectionSeleccionarAtaque.style.display = "flex"
+    seleccionarPersonjeEnemigo(enemigo)
+    //sectionVerMapa.style.display = `none`
+    //alert(`hay colision` + enemigo.nombre)
 }
 
 window.addEventListener('load', iniciarJuego)
