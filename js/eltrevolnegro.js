@@ -64,18 +64,30 @@ let jugadorObjeto
 let mapaBackground = new Image()
 mapaBackground.src = "./assets/mapa.png"
 
+let alturaQueBuscamos
+let anchoDelMapa = window.innerWidth - 20
+const anchoMaximoDelMapa = 800
+
+if (anchoDelMapa > anchoMaximoDelMapa) {
+  anchoDelMapa = anchoMaximoDelMapa - 20
+}
+
+alturaQueBuscamos = anchoDelMapa * 600 / 800
+mapa.width = anchoDelMapa
+mapa.height = alturaQueBuscamos
+
 sectionReiniciar.style.display = 'none'
 
 class personaje {
-    constructor(nombre, foto, vida, x=10, y=10) {
+    constructor(nombre, foto, vida ) {
         this.nombre = nombre
         this.foto = foto 
         this.vida = vida 
         this.ataques = []
-        this.x = x
-        this.y = y
         this.ancho = 80
-        this.alto = 80
+        this.alto = 80   
+        this.x = aleatorio(0, mapa.width - this.ancho)
+        this.y = aleatorio(0, mapa.height - this.alto)
         this.mapaFoto = new Image()
         this.mapaFoto.src = foto 
         this.velocidadX = 0
@@ -97,9 +109,9 @@ class personaje {
 let asta = new personaje('Asta', './assets/Asta.png', 5)
 let juno = new personaje('Juno', './assets/Juno.png', 5)
 let lucifero = new personaje('Lucifero', './assets/Lucifero.png', 5)
-let astaEnemigo = new personaje('Asta', './assets/Asta.png', 5, 80, 120)
-let junoEnemigo = new personaje('Juno', './assets/Juno.png', 5, 150, 95)
-let luciferoEnemigo = new personaje('Lucifero', './assets/Lucifero.png', 5, 200, 190)
+let astaEnemigo = new personaje('Asta', './assets/Asta.png', 5 )
+let junoEnemigo = new personaje('Juno', './assets/Juno.png', 5 )
+let luciferoEnemigo = new personaje('Lucifero', './assets/Lucifero.png', 5 )
 
 asta.ataques.push(
     {nombre: 'nomagia☘', id:'boton-nomagia'},
@@ -437,8 +449,6 @@ function sePresionoUnaTecla(event) {
 
 function iniciarMapa() {
 
-  mapa.width = 700
-  mapa.height = 500
   jugadorObjeto = obtenerObjetoPersonaje(guardarNombrePersonaje) 
   intervalo = setInterval(pintarCanvas, 50)
   window.addEventListener("keydown", sePresionoUnaTecla)

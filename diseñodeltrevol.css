@@ -128,6 +128,14 @@ body{
     } 
 }
 
+@media (max-width: 550px) {
+    #ver-mapa div {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+}
+
 input{
     display: none;
 }
@@ -142,6 +150,14 @@ background-color: #03001C;
   justify-content: center;
 }
 
-#mapa {
-  border: 2px solid white;
+
+#ver-mapa button {
+  font-family: 'New Rocker', cursive;
+  color: white;
+  width: 80px;
+  height: 40px;
+  margin: 5px;
+  background: transparent;
+  border: 2px solid #301E67;
+  border-radius: 20px;
 }
