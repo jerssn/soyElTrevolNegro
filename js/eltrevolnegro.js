@@ -38,6 +38,7 @@ const contenedorAtaques = document.getElementById('contenedorAtaques')
 const sectionVerMapa = document.getElementById("ver-mapa")
 const mapa = document.getElementById("mapa")
 
+let jugadorId = null
 let personajes = []
 let opcionDePersonajes
 let ataqueEnemigo = []
@@ -185,6 +186,20 @@ function iniciarJuego() {
     
     botonPersonajeJugador.addEventListener('click', seleccionarPersonajeJugador)
     botonReiniciar.addEventListener('click', reiniciarJuego)
+    unirseAlJuego()
+}
+
+function unirseAlJuego() {
+  fetch("http://localhost:8080/unirse")
+    .then(function (res) {
+      if (res.ok) {
+        res.text()
+          .then(function (respuesta){
+              console.log(respuesta)
+              jugadorId = respuesta
+          })
+      }
+    })
 }
 
 function seleccionarPersonajeJugador() {
@@ -210,13 +225,25 @@ function seleccionarPersonajeJugador() {
     else { alert('SELECCIONA UNA MASCOTA')
     }
     
-        //sectionSeleccionarAtaque.style.display = 'flex'
-        sectionVerMapa.style.display = "flex"
-        
-        iniciarMapa()
-        extraerAtaques(guardarNombrePersonaje) //class66 mascotaJugador=guardarNombrePersonaje
-        
-        
+    sectionVerMapa.style.display = "flex"
+    //sectionSeleccionarAtaque.style.display = 'flex'
+    seleccionarPersonaje()
+    
+    extraerAtaques(guardarNombrePersonaje) //class66 mascotaJugador=guardarNombrePersonaje
+    iniciarMapa()        
+}
+
+function seleccionarPersonaje(guardarNombrePersonaje) {
+  fetch(`http://localhost:8080/personaje/${jugadorId}`, {
+    method: "post", 
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      personaje: guardarNombrePersonaje
+    })
+  })
+
 }
 
 function extraerAtaques (guardarNombrePersonaje) {
