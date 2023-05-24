@@ -13,7 +13,7 @@ class Jugador{
         this.id = id
     }
 
-    asignarPersonje(personaje) {
+    asignarPersonaje(personaje) {
         this.personaje = personaje
     }
 }
@@ -43,7 +43,7 @@ app.post("/personaje/:jugadorId", (req, res) => {
     const jugadorIndex = jugadores.findIndex((jugador) => jugadorId === jugador.id)
 
     if (jugadorIndex >= 0) {
-        jugadores[jugadorIndex].asignarPersonje(personaje)
+        jugadores[jugadorIndex].asignarPersonaje(personaje)
     }
 
     console.log(jugadores)

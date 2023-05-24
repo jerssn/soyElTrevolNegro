@@ -194,7 +194,7 @@ function unirseAlJuego() {
     .then(function (res) {
       if (res.ok) {
         res.text()
-          .then(function (respuesta){
+          .then(function (respuesta) {
               console.log(respuesta)
               jugadorId = respuesta
           })
@@ -225,12 +225,12 @@ function seleccionarPersonajeJugador() {
     else { alert('SELECCIONA UNA MASCOTA')
     }
     
+    seleccionarPersonaje(guardarNombrePersonaje)
     sectionVerMapa.style.display = "flex"
     //sectionSeleccionarAtaque.style.display = 'flex'
-    seleccionarPersonaje()
     
     extraerAtaques(guardarNombrePersonaje) //class66 mascotaJugador=guardarNombrePersonaje
-    iniciarMapa()        
+    iniciarMapa()
 }
 
 function seleccionarPersonaje(guardarNombrePersonaje) {
@@ -238,12 +238,11 @@ function seleccionarPersonaje(guardarNombrePersonaje) {
     method: "post", 
     headers: {
       "Content-Type": "application/json"
-    },
+    }, 
     body: JSON.stringify({
       personaje: guardarNombrePersonaje
     })
   })
-
 }
 
 function extraerAtaques (guardarNombrePersonaje) {
@@ -477,6 +476,7 @@ function sePresionoUnaTecla(event) {
 function iniciarMapa() {
 
   jugadorObjeto = obtenerObjetoPersonaje(guardarNombrePersonaje) 
+  console.log(jugadorObjeto, guardarNombrePersonaje)
   intervalo = setInterval(pintarCanvas, 50)
   window.addEventListener("keydown", sePresionoUnaTecla)
   window.addEventListener("keyup", detenerMovimiento)
