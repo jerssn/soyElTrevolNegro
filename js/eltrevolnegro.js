@@ -39,7 +39,9 @@ const sectionVerMapa = document.getElementById("ver-mapa")
 const mapa = document.getElementById("mapa")
 
 let jugadorId = null
+let enemigoId = null 
 let personajes = []
+let personajesEnemigos = []
 let opcionDePersonajes
 let ataqueEnemigo = []
 let personajeJuno
@@ -80,7 +82,8 @@ mapa.height = alturaQueBuscamos
 sectionReiniciar.style.display = 'none'
 
 class personaje {
-    constructor(nombre, foto, vida ) {
+    constructor(nombre, foto, vida, id = null ) {
+        this.id = id
         this.nombre = nombre
         this.foto = foto 
         this.vida = vida 
@@ -110,57 +113,33 @@ class personaje {
 let asta = new personaje('Asta', './assets/Asta.png', 5)
 let juno = new personaje('Juno', './assets/Juno.png', 5)
 let lucifero = new personaje('Lucifero', './assets/Lucifero.png', 5)
-let astaEnemigo = new personaje('Asta', './assets/Asta.png', 5 )
-let junoEnemigo = new personaje('Juno', './assets/Juno.png', 5 )
-let luciferoEnemigo = new personaje('Lucifero', './assets/Lucifero.png', 5 )
 
-asta.ataques.push(
+const ASTA_ATAQUES =[                                   // class 79
     {nombre: 'nomagia☘', id:'boton-nomagia'},
     {nombre: 'nomagia☘', id:'boton-nomagia'},
     {nombre: 'nomagia☘', id:'boton-nomagia'},
     {nombre: 'mana🎆', id:'boton-mana'},
     {nombre: 'diavlo👿', id:'boton-diavlo'},
-    )
+  ]
+asta.ataques.push(...ASTA_ATAQUES)
     
-astaEnemigo.ataques.push(
-    {nombre: 'nomagia☘', id:'boton-nomagia'},
-    {nombre: 'nomagia☘', id:'boton-nomagia'},
-    {nombre: 'nomagia☘', id:'boton-nomagia'},
-    {nombre: 'mana🎆', id:'boton-mana'},
-    {nombre: 'diavlo👿', id:'boton-diavlo'},
-    )    
-    
-juno.ataques.push(
+const JUNO_ATAQUES = [
     {nombre: 'mana🎆', id:'boton-mana'},
     {nombre: 'mana🎆', id:'boton-mana'},
     {nombre: 'mana🎆', id:'boton-mana'},
     {nombre: 'nomagia☘', id:'boton-nomagia'},
     {nombre: 'diavlo👿', id:'boton-diavlo'},
-    )
+]
+juno.ataques.push(...JUNO_ATAQUES)
 
-junoEnemigo.ataques.push(
-    {nombre: 'mana🎆', id:'boton-mana'},
-    {nombre: 'mana🎆', id:'boton-mana'},
-    {nombre: 'mana🎆', id:'boton-mana'},
-    {nombre: 'nomagia☘', id:'boton-nomagia'},
-    {nombre: 'diavlo👿', id:'boton-diavlo'},
-    )
-
-lucifero.ataques.push(
+const LUCIFERO_ATAQUES = [
     {nombre: 'diavlo👿', id:'boton-diavlo'},
     {nombre: 'diavlo👿', id:'boton-diavlo'},
     {nombre: 'diavlo👿', id:'boton-diavlo'},
     {nombre: 'mana🎆', id:'boton-mana'},
     {nombre: 'nomagia☘', id:'boton-nomagia'},
-    )
-
-luciferoEnemigo.ataques.push(
-    {nombre: 'diavlo👿', id:'boton-diavlo'},
-    {nombre: 'diavlo👿', id:'boton-diavlo'},
-    {nombre: 'diavlo👿', id:'boton-diavlo'},
-    {nombre: 'mana🎆', id:'boton-mana'},
-    {nombre: 'nomagia☘', id:'boton-nomagia'},
-    )
+]
+lucifero.ataques.push(...LUCIFERO_ATAQUES)
 
 personajes.push(asta,juno,lucifero)
 
@@ -290,22 +269,53 @@ function secuenciaAtaque () {                              // clase 56
                 console.log(ataqueJugador)
                 boton.style.background = '#112f58'
                 boton.disabled = true
-            }        
-            ataqueAleatorioEnemigo()
+            }      
+            if (ataqueJugador.length === 5 ) {
+                  enviarAtaques()
+            } 
         })        
     })
+}
+
+function enviarAtaques() {
+  fetch(`http://localhost:8080/personaje/${jugadorId}/ataques`, {
+    method: "post", 
+    headers: {
+      "Content-Type": "application/json"
+    }, 
+    body: JSON.stringify({
+      ataques: ataqueJugador
+    })
+  })
+      intervalo = setInterval(obtenerAtaques, 50)
+}
+
+function obtenerAtaques() {
+  fetch(`http://localhost:8080/personaje/${enemigoId}/ataques`)
+    .then(function (res) { 
+      if (res.ok) {
+        res.json()
+          .then(function ({ ataques }) {
+              if (ataques.length === 5) {
+                ataqueEnemigo = ataques 
+                combate()
+              }
+          })
+      }
+    })
+   
 }
 
 function seleccionarPersonjeEnemigo(){
     let nombreAleatorio = aleatorio(0, personajes.length -1)
     
-    spanNombreEnemigo.innerHTML = personajes[nombreAleatorio].nombre               //clase 53
-    ataquesPersonajeEnemigo = personajes[nombreAleatorio].ataques                  //clase 57 
+    spanNombreEnemigo.innerHTML = personajes[nombreAleatorio].nombre           //clase 53
+    ataquesPersonajeEnemigo = personajes[nombreAleatorio].ataques               //clase 57 
     secuenciaAtaque()
 }
 
 function ataqueAleatorioEnemigo() {
-    let ataqueEnemigoA = aleatorio(0,ataquesPersonajeEnemigo.length -1)            // clase 57 
+    let ataqueEnemigoA = aleatorio(0,ataquesPersonajeEnemigo.length -1)        // clase 57 
 
     if (ataqueEnemigoA == 0 || ataqueEnemigoA == 1) {
         ataqueEnemigo.push('Mana')
@@ -338,6 +348,7 @@ function indexAmbosOponentes(jugador, enemigo) {
 }
 
 function combate() {
+  clearInterval(intervalo)
 
   for (let index = 0; index < ataqueJugador.length; index++) {
     if (ataqueJugador[index] === ataqueEnemigo[index]) {
@@ -421,14 +432,58 @@ function pintarCanvas() {
     mapa.height
   )
   jugadorObjeto.pintarPersonaje()
-  astaEnemigo.pintarPersonaje()
-  junoEnemigo.pintarPersonaje()
-  luciferoEnemigo.pintarPersonaje()
+
+  enviarPosicion(jugadorObjeto.x, jugadorObjeto.y)
+
+  personajesEnemigos.forEach(function (personaje) {
+    personaje.pintarPersonaje()   
+    revisarColision(personaje)
+
+  })
   
-  if (jugadorObjeto.velocidadX !== 0 || jugadorObjeto.velocidadY !== 0){
-    revisarColision(astaEnemigo)
-    revisarColision(junoEnemigo)
-    revisarColision(luciferoEnemigo)  }
+
+}
+
+function enviarPosicion(x, y) {
+  fetch(`http://localhost:8080/personaje/${jugadorId}/posicion`, {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      x,
+      y
+    })
+  })
+
+  .then(function (res) {                           //class79
+    if (res.ok) {
+      res.json()
+        .then(function({ enemigos }) {
+            console.log(enemigos)
+
+            personajesEnemigos = enemigos.map(function (enemigo) {
+                let personajeEnemigo = null 
+                const personajeNombre = enemigo.personaje.nombre || ""
+                if (personajeNombre === "Asta") {
+                    personajeEnemigo = new personaje('Asta', './assets/Asta.png', 5, enemigo.id )
+                }
+                else if (personajeNombre === "Juno") {
+                    personajeEnemigo = new personaje('Juno', './assets/Juno.png', 5, enemigo.id )
+                }
+                else if (personajeNombre === "Lucifero") {
+                    personajeEnemigo = new personaje('Lucifero', './assets/Lucifero.png', 5, enemigo.id )
+                }
+                personajeEnemigo.x = enemigo.x
+                personajeEnemigo.y = enemigo.y 
+
+                return personajeEnemigo
+
+            })
+
+        })
+    }
+  })
 }
 
 function moverDerecha() {
@@ -512,6 +567,9 @@ function revisarColision(enemigo) {
     }
     detenerMovimiento()
     clearInterval(intervalo)
+
+    enemigoId = enemigo.id
+
     sectionSeleccionarAtaque.style.display = "flex"
     seleccionarPersonjeEnemigo(enemigo)
     //sectionVerMapa.style.display = `none`
