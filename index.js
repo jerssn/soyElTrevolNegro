@@ -70,13 +70,13 @@ app.post("/personaje/:jugadorId/posicion", (req, res) => {
         jugadores[jugadorIndex].actualizarPosicion(x, y)
     }
     
-    const enemigos = jugadores.filter((jugador) => jugadorId !== jugador.id )
+    const enemigos = jugadores.filter((jugador) => jugadorId !== jugador.id) 
     res.send({
         enemigos
     })
 })
 
-app.post("/personaje/:jugadorId", (req, res) => {
+app.post("/personaje/:jugadorId/ataques", (req, res) => {
     const jugadorId = req.params.jugadorId || ""
     const ataques = req.body.ataques || []
 
